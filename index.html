@@ -297,9 +297,25 @@
         }
       });
     })();
+
+
   </script>
 
-  <script>
+  <script>    // === CTA Event Push (GTM/GA4 için garanti) ===
+    (function(){
+      function onClick(sel, eventName){
+        document.querySelectorAll(sel).forEach(function(el){
+          el.addEventListener("click", function(){
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: eventName });
+          });
+        });
+      }
+
+      onClick('a[href^="tel:"]', "cta_call");
+      onClick('a[href*="wa.me"]', "cta_whatsapp");
+    })();
+
 (function(){
   const bar = document.querySelector('.mobile-bar');
   if(!bar) return;
