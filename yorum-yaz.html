@@ -1,36 +1,40 @@
 <!doctype html>
 <html lang="tr">
 <head>
-    <!-- Google Tag Manager -->
-<script>
-(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-MTHBHJ4R');
-</script>
-<!-- End Google Tag Manager -->
+  <!-- Google Tag Manager -->
+  <script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-MTHBHJ4R');
+  </script>
+  <!-- End Google Tag Manager -->
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Yorum Yaz | mersintaxi.online</title>
-  <meta name="description" content="Mersin Taxi için yorum bırakın." />
+  <meta name="description" content="Mersin Taksi için yorum bırakın." />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-<!-- Google Tag Manager (noscript) -->
-<noscript>
-  <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MTHBHJ4R"
-          height="0" width="0" style="display:none;visibility:hidden"></iframe>
-</noscript>
-<!-- End Google Tag Manager (noscript) -->
+  <!-- Google Tag Manager (noscript) -->
+  <noscript>
+    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MTHBHJ4R"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe>
+  </noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="index.html">
-        <div class="brand-mark" aria-hidden="true"></div>
+      <a class="brand" href="index.html" style="text-decoration:none;">
+        <img
+          src="assets/img/mersin-taksi-logo.png"
+          alt="Mersin Taksi"
+          style="width:38px;height:38px;border-radius:10px"
+        />
         <div>
-          Mersin Taxi
+          <strong>Mersin Taksi</strong>
           <small>Yorum Yaz</small>
         </div>
       </a>
@@ -59,11 +63,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div>
           <div style="font-weight:800;margin-bottom:8px">Profil resmi seçin</div>
           <div class="avatars" id="avatars">
-            <button type="button" class="avatar-pick active" data-avatar="a1"></button>
-            <button type="button" class="avatar-pick" data-avatar="a2"></button>
-            <button type="button" class="avatar-pick" data-avatar="a3"></button>
-            <button type="button" class="avatar-pick" data-avatar="a4"></button>
-            <button type="button" class="avatar-pick" data-avatar="a5"></button>
+            <button type="button" class="avatar-pick active" data-avatar="a1" aria-label="Avatar 1"></button>
+            <button type="button" class="avatar-pick" data-avatar="a2" aria-label="Avatar 2"></button>
+            <button type="button" class="avatar-pick" data-avatar="a3" aria-label="Avatar 3"></button>
+            <button type="button" class="avatar-pick" data-avatar="a4" aria-label="Avatar 4"></button>
+            <button type="button" class="avatar-pick" data-avatar="a5" aria-label="Avatar 5"></button>
           </div>
           <div class="small">Not: Bu aşamada avatarlar temsilidir. İsterseniz gerçek ikonlar ekleriz.</div>
         </div>
@@ -74,7 +78,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </section>
 
     <footer class="footer">
-      © <span id="y"></span> mersintaxi.online
+      © <span id="y"></span> mersintaxi.online •
+      <a href="gizlilik.html" style="color:#b7bcc7;text-decoration:underline">Gizlilik Politikası</a>
     </footer>
   </main>
 
@@ -90,10 +95,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       });
     });
 
-    // Şimdilik form gönderimi demo (canlı kayıt sonraki adım)
+    // Demo submit (canlı kayıt sonraki adım)
     document.getElementById("reviewForm").addEventListener("submit", (e)=>{
       e.preventDefault();
-      document.getElementById("msg").textContent = "Teşekkürler. Yorumunuz alındı (bir sonraki adımda otomatik yayın kurulacak).";
+      document.getElementById("msg").textContent =
+        "Teşekkürler. Yorumunuz alındı (bir sonraki adımda otomatik yayın kurulacak).";
       e.target.reset();
       picks.forEach((x,i)=>x.classList.toggle("active", i===0));
     });

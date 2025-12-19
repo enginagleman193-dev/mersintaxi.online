@@ -42,8 +42,20 @@
 
       <div class="actions">
         <a class="btn btn-outline" href="yorum-yaz.html">Yorum Yaz</a>
-        <a class="btn btn-outline" href="https://wa.me/905302331634" target="_blank" rel="noopener">WhatsApp</a>
-        <a class="btn btn-primary" href="tel:+905302331634">Ara</a>
+
+        <a class="btn btn-outline"
+           href="https://wa.me/905393180568"
+           target="_blank"
+           rel="noopener"
+           onclick="window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_whatsapp'});">
+          WhatsApp
+        </a>
+
+        <a class="btn btn-primary"
+           href="tel:+905393180568"
+           onclick="window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_call'});">
+          Ara
+        </a>
       </div>
     </div>
   </header>
@@ -116,15 +128,23 @@
         </div>
       </div>
 
-      <!-- SABİT CTA (mobilde gizleniyor) -->
+      <!-- SABİT CTA (mobilde gizleniyor olabilir) -->
       <div class="hero-cta">
-        <a class="call" href="tel:+905302331634">Ara</a>
-        <a class="wa" href="https://wa.me/905302331634" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="call"
+           href="tel:+905393180568"
+           onclick="window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_call'});">
+          Ara
+        </a>
+        <a class="wa"
+           href="https://wa.me/905393180568"
+           target="_blank"
+           rel="noopener"
+           onclick="window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_whatsapp'});">
+          WhatsApp
+        </a>
       </div>
 
-      <!-- DOTS -->
       <div class="hero-dots" id="heroDots" aria-label="Slider noktaları"></div>
-
     </div>
   </section>
 
@@ -245,8 +265,10 @@
   </main>
 
   <script>
+    // Yıl
     document.getElementById("y").textContent = new Date().getFullYear();
 
+    // Slider
     (function(){
       const slidesWrap = document.getElementById("heroSlides");
       const dotsWrap = document.getElementById("heroDots");
@@ -298,46 +320,35 @@
       });
     })();
 
-
-  </script>
-
-  <script>    // === CTA Event Push (GTM/GA4 için garanti) ===
+    // Mobil bar scroll ile gizle/göster (CSS'te .is-hidden varsa)
     (function(){
-      function onClick(sel, eventName){
-        document.querySelectorAll(sel).forEach(function(el){
-          el.addEventListener("click", function(){
-            window.dataLayer = window.dataLayer || [];
-            window.dataLayer.push({ event: eventName });
-          });
-        });
-      }
+      const bar = document.querySelector('.mobile-bar');
+      if(!bar) return;
 
-      onClick('a[href^="tel:"]', "cta_call");
-      onClick('a[href*="wa.me"]', "cta_whatsapp");
+      let lastY = window.scrollY;
+      window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+        if (y > lastY + 8) bar.classList.add('is-hidden');
+        if (y < lastY - 8) bar.classList.remove('is-hidden');
+        lastY = y;
+      }, {passive:true});
     })();
-
-(function(){
-  const bar = document.querySelector('.mobile-bar');
-  if(!bar) return;
-
-  let lastY = window.scrollY;
-  window.addEventListener('scroll', () => {
-    const y = window.scrollY;
-
-    // aşağı kaydırınca gizle, yukarı kaydırınca göster
-    if (y > lastY + 8) bar.classList.add('is-hidden');
-    if (y < lastY - 8) bar.classList.remove('is-hidden');
-
-    lastY = y;
-  }, {passive:true});
-})();
-</script>
-
+  </script>
 
   <!-- Mobil Sabit Aksiyon Bar -->
   <div class="mobile-bar">
-    <a class="call" href="tel:+905302331634">Ara</a>
-    <a class="wa" href="https://wa.me/905302331634" target="_blank" rel="noopener">WhatsApp</a>
+    <a class="call"
+       href="tel:+905393180568"
+       onclick="window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_call'});">
+      Ara
+    </a>
+    <a class="wa"
+       href="https://wa.me/905393180568"
+       target="_blank"
+       rel="noopener"
+       onclick="window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'cta_whatsapp'});">
+      WhatsApp
+    </a>
   </div>
 
 </body>
