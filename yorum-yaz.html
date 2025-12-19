@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="tr">
+<head>
+    <!-- Google Tag Manager -->
+<script>
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MTHBHJ4R');
+</script>
+<!-- End Google Tag Manager -->
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Yorum Yaz | mersintaxi.online</title>
+  <meta name="description" content="Mersin Taxi için yorum bırakın." />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript>
+  <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MTHBHJ4R"
+          height="0" width="0" style="display:none;visibility:hidden"></iframe>
+</noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="index.html">
+        <div class="brand-mark" aria-hidden="true"></div>
+        <div>
+          Mersin Taxi
+          <small>Yorum Yaz</small>
+        </div>
+      </a>
+      <div class="actions">
+        <a class="btn btn-primary" href="index.html">Ana Sayfa</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="section hero">
+      <div class="grid" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <span class="badge">Geri Bildirim</span>
+        <h1 class="h1">Yorumunuzu bırakın</h1>
+        <p class="p">Adınızı yazın, soyadınız gizlenerek (ilk harf + yıldız) yayınlanır.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <form class="form" id="reviewForm">
+        <input class="input" name="firstName" placeholder="Ad" required />
+        <input class="input" name="lastName" placeholder="Soyad" required />
+        <textarea class="textarea" name="comment" placeholder="Yorumunuz" required></textarea>
+
+        <div>
+          <div style="font-weight:800;margin-bottom:8px">Profil resmi seçin</div>
+          <div class="avatars" id="avatars">
+            <button type="button" class="avatar-pick active" data-avatar="a1"></button>
+            <button type="button" class="avatar-pick" data-avatar="a2"></button>
+            <button type="button" class="avatar-pick" data-avatar="a3"></button>
+            <button type="button" class="avatar-pick" data-avatar="a4"></button>
+            <button type="button" class="avatar-pick" data-avatar="a5"></button>
+          </div>
+          <div class="small">Not: Bu aşamada avatarlar temsilidir. İsterseniz gerçek ikonlar ekleriz.</div>
+        </div>
+
+        <button class="btn btn-primary" type="submit">Gönder</button>
+        <div class="small" id="msg"></div>
+      </form>
+    </section>
+
+    <footer class="footer">
+      © <span id="y"></span> mersintaxi.online
+    </footer>
+  </main>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+
+    // Avatar seçimi (statik)
+    const picks = document.querySelectorAll(".avatar-pick");
+    picks.forEach(b=>{
+      b.addEventListener("click", ()=>{
+        picks.forEach(x=>x.classList.remove("active"));
+        b.classList.add("active");
+      });
+    });
+
+    // Şimdilik form gönderimi demo (canlı kayıt sonraki adım)
+    document.getElementById("reviewForm").addEventListener("submit", (e)=>{
+      e.preventDefault();
+      document.getElementById("msg").textContent = "Teşekkürler. Yorumunuz alındı (bir sonraki adımda otomatik yayın kurulacak).";
+      e.target.reset();
+      picks.forEach((x,i)=>x.classList.toggle("active", i===0));
+    });
+  </script>
+</body>
+</html>
