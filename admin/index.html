@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Panel | mersintaxi.online</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <style>
+    /* Premium panel görünümü */
+    .admin-wrap{max-width:980px;margin:0 auto;padding:16px}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 0 14px}
+    .panel-title{margin:0;font-size:18px;font-weight:950}
+    .panel-sub{margin:0;color:var(--muted);font-size:12px}
+    .kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
+    .kpi .card{padding:12px}
+    .kpi .v{font-size:20px;font-weight:950}
+    .kpi .t{color:var(--muted);font-size:12px;margin-top:4px}
+
+    .list{display:grid;gap:10px}
+    .item{border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);border-radius:18px;padding:14px}
+    .item-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .item-name{font-weight:950}
+    .tag{font-size:12px;font-weight:900;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:var(--muted)}
+    .tag.wait{border-color:rgba(255,208,0,.35);color:#ffe58a;background:rgba(255,208,0,.06)}
+    .tag.pub{border-color:rgba(0,200,120,.35);color:#b8ffd9;background:rgba(0,200,120,.06)}
+    .tag.rej{border-color:rgba(255,90,90,.35);color:#ffd0d0;background:rgba(255,90,90,.06)}
+    .item-quote{margin:10px 0 0;color:#e8e8ea;line-height:1.55}
+    .item-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn-mini{height:40px;border-radius:12px;padding:0 12px;font-weight:950}
+    .btn-green{background:linear-gradient(135deg,#2ee59d,#11c57a);border:0;color:#07110c}
+    .btn-red{background:transparent;border:1px solid rgba(255,90,90,.45);color:#ffd0d0}
+    .btn-gray{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);color:#fff}
+
+    /* Login overlay */
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;z-index:9999;padding:18px}
+    .login{width:100%;max-width:420px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(15,15,16,.96);padding:16px}
+    .login h2{margin:0 0 6px;font-size:18px}
+    .login p{margin:0 0 12px;color:var(--muted);font-size:12px;line-height:1.55}
+    .login .row2{display:grid;grid-template-columns:1fr;gap:10px}
+    .hint{margin-top:10px;color:var(--muted);font-size:12px}
+    .danger{color:#ffd0d0}
+    .top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <img src="/assets/img/mersin-taksi-logo.png" alt="Mersin Taksi" style="width:38px;height:38px;border-radius:10px" />
+        <div>
+          <strong>Admin Panel</strong>
+          <small>Yorum Yönetimi</small>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="btn btn-outline" id="btnRefresh" type="button">Yenile</button>
+        <a class="btn btn-primary" href="/">Siteye Dön</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-wrap">
+    <div class="panel-head">
+      <div>
+        <h1 class="panel-title">Yorumlar</h1>
+        <p class="panel-sub">Beklemede olanları onaylayın; yayınlananlar ana sayfada görünür.</p>
+      </div>
+      <div class="small" id="statusText">—</div>
+    </div>
+
+    <section class="kpi">
+      <div class="card">
+        <div class="v" id="kpiAll">0</div>
+        <div class="t">Toplam (liste)</div>
+      </div>
+      <div class="card">
+        <div class="v" id="kpiWait">0</div>
+        <div class="t">Beklemede</div>
+      </div>
+      <div class="card">
+        <div class="v" id="kpiPub">0</div>
+        <div class="t">Yayınla</div>
+      </div>
+    </section>
+
+    <section class="list" id="list"></section>
+    <div class="note" style="margin-top:12px">
+      Not: Bu panel Google Sheet’i arkada yönetir. “Yayınla” veya “Reddet” işlemi anında tabloya yansır.
+    </div>
+  </main>
+
+  <!-- Login Overlay -->
+  <div class="overlay" id="overlay">
+    <div class="login">
+      <h2>Giriş</h2>
+      <p>Yönetici şifrenizi girin.</p>
+
+      <div class="row2">
+        <input class="input" id="password" type="password" placeholder="Şifre" autocomplete="current-password" />
+        <button class="btn btn-primary" id="btnLogin" type="button">Giriş Yap</button>
+        <div class="small danger" id="loginErr"></div>
+        <div class="hint">
+          İlk kurulum için: Şifreyi yazıp “Giriş Yap” deyince, panel hash’i üretir.
+          Sonra Apps Script’te <b>ADMIN_KEY_HASH</b> alanına bu hash’i girmeniz gerekir.
+          <div class="small" id="hashOut" style="margin-top:8px;word-break:break-all;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const REVIEWS_API = "https://script.google.com/macros/s/AKfycbxClFY-pL7sIM_a4_YhJgmYb_eUl5nzdWzL2sRaeEFApGjZh-o23_NUSXp4nFzzTEhHqA/exec";
+    const SESSION_KEY = "mt_admin_keyHash";
+
+    const $ = (id)=>document.getElementById(id);
+
+    function escapeHtml(str){
+      return String(str || "")
+        .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    }
+
+    async function sha256Hex(text){
+      const enc = new TextEncoder().encode(text);
+      const buf = await crypto.subtle.digest("SHA-256", enc);
+      const bytes = Array.from(new Uint8Array(buf));
+      return bytes.map(b=>b.toString(16).padStart(2,"0")).join("");
+    }
+
+    function jsonp(url){
+      return new Promise((resolve, reject)=>{
+        const cb = "cb_" + Math.random().toString(36).slice(2);
+        window[cb] = (data)=>{
+          try { delete window[cb]; } catch(e) { window[cb]=undefined; }
+          script.remove();
+          resolve(data);
+        };
+        const script = document.createElement("script");
+        script.src = url + (url.includes("?") ? "&" : "?") + "callback=" + cb + "&t=" + Date.now();
+        script.onerror = ()=> {
+          try { delete window[cb]; } catch(e) {}
+          reject(new Error("jsonp_error"));
+        };
+        document.body.appendChild(script);
+      });
+    }
+
+    function tagClass(status){
+      if(status === "Beklemede") return "tag wait";
+      if(status === "Yayınla") return "tag pub";
+      if(status === "Reddedildi") return "tag rej";
+      return "tag";
+    }
+
+    function setStatus(msg){
+      $("statusText").textContent = msg;
+    }
+
+    async function loadAdminList(){
+      const keyHash = localStorage.getItem(SESSION_KEY);
+      if(!keyHash){
+        $("overlay").style.display = "flex";
+        return;
+      }
+
+      setStatus("Yükleniyor…");
+      const data = await jsonp(`${REVIEWS_API}?mode=adminList&keyHash=${encodeURIComponent(keyHash)}`);
+
+      if(!data || data.ok !== true){
+        setStatus("Yetki hatası");
+        $("overlay").style.display = "flex";
+        $("loginErr").textContent = "Şifre hatalı veya yetkiniz yok.";
+        localStorage.removeItem(SESSION_KEY);
+        return;
+      }
+
+      const items = data.items || [];
+      const waitCount = items.filter(x=>x.adminOnay==="Beklemede").length;
+      const pubCount  = items.filter(x=>x.adminOnay==="Yayınla").length;
+
+      $("kpiAll").textContent = items.length;
+      $("kpiWait").textContent = waitCount;
+      $("kpiPub").textContent = pubCount;
+
+      if(items.length === 0){
+        $("list").innerHTML = `<div class="card"><div class="small">Listelenecek yorum yok.</div></div>`;
+        setStatus("Hazır");
+        return;
+      }
+
+      $("list").innerHTML = items.map(it=>{
+        const name = `${it.ad || ""} ${it.soyadMasked || ""}`.trim();
+        const gender = it.cinsiyet || "-";
+        const rating = (it.puan || 0) + "/5";
+        const status = it.adminOnay || "-";
+
+        const btns = (status === "Beklemede")
+          ? `
+            <button class="btn btn-mini btn-green" data-act="publish" data-row="${it.row}">Yayınla</button>
+            <button class="btn btn-mini btn-red" data-act="reject" data-row="${it.row}">Reddet</button>
+          `
+          : `<button class="btn btn-mini btn-gray" disabled>Durum: ${escapeHtml(status)}</button>`;
+
+        return `
+          <div class="item">
+            <div class="item-top">
+              <div>
+                <div class="row">
+                  <div class="avatar ${gender.toLowerCase().includes("erk") ? "avatar-male" : (gender.toLowerCase().includes("kad") ? "avatar-female" : "avatar-neutral")}" aria-hidden="true"></div>
+                  <div>
+                    <div class="item-name">${escapeHtml(name)}</div>
+                    <div class="meta">${escapeHtml(gender)} • ${escapeHtml(rating)}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="${tagClass(status)}">${escapeHtml(status)}</div>
+            </div>
+
+            <p class="item-quote">“${escapeHtml(it.yorum)}”</p>
+
+            <div class="item-actions">
+              ${btns}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // Action handlers
+      document.querySelectorAll("[data-act]").forEach(btn=>{
+        btn.addEventListener("click", async ()=>{
+          const action = btn.getAttribute("data-act");
+          const row = btn.getAttribute("data-row");
+          await adminAction(action, row);
+        });
+      });
+
+      setStatus("Hazır");
+    }
+
+    async function adminAction(action, row){
+      const keyHash = localStorage.getItem(SESSION_KEY);
+      if(!keyHash) return;
+
+      setStatus("İşleniyor…");
+      const data = await jsonp(`${REVIEWS_API}?mode=adminAction&action=${encodeURIComponent(action)}&row=${encodeURIComponent(row)}&keyHash=${encodeURIComponent(keyHash)}`);
+
+      if(!data || data.ok !== true){
+        setStatus("İşlem başarısız");
+        alert("İşlem başarısız. Yetki veya bağlantı sorunu olabilir.");
+        return;
+      }
+
+      await loadAdminList();
+    }
+
+    async function login(){
+      const pw = $("password").value || "";
+      $("loginErr").textContent = "";
+
+      if(pw.length < 4){
+        $("loginErr").textContent = "Şifre çok kısa.";
+        return;
+      }
+
+      const keyHash = await sha256Hex(pw);
+      $("hashOut").textContent = "ADMIN_KEY_HASH (Apps Script'e yazılacak): " + keyHash;
+
+      // Hash'i sakla ve paneli dene
+      localStorage.setItem(SESSION_KEY, keyHash);
+      $("overlay").style.display = "none";
+
+      await loadAdminList();
+    }
+
+    $("btnLogin").addEventListener("click", login);
+    $("password").addEventListener("keydown", (e)=>{ if(e.key==="Enter") login(); });
+    $("btnRefresh").addEventListener("click", loadAdminList);
+
+    // Oturum varsa direkt dene
+    loadAdminList();
+  </script>
+</body>
+</html>
