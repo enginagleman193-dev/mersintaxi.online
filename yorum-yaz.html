@@ -17,6 +17,7 @@
   <meta name="description" content="Mersin Taksi için yorum bırakın." />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
+
 <body>
   <!-- Google Tag Manager (noscript) -->
   <noscript>
@@ -38,6 +39,7 @@
           <small>Yorum Yaz</small>
         </div>
       </a>
+
       <div class="actions">
         <a class="btn btn-primary" href="/">Ana Sayfa</a>
       </div>
@@ -50,30 +52,43 @@
       <div class="hero-inner">
         <span class="badge">Geri Bildirim</span>
         <h1 class="h1">Yorumunuzu bırakın</h1>
-        <p class="p">Adınızı yazın, soyadınız gizlenerek (ilk harf + yıldız) yayınlanır.</p>
+        <p class="p">
+          Yorumlar admin onayı sonrası yayınlanır. Soyadınız gizlenerek (ilk harf + ****) gösterilir.
+        </p>
       </div>
     </section>
 
     <section class="section">
-      <form class="form" id="reviewForm">
+      <!-- ÖNEMLİ: action Apps Script Web App /exec -->
+      <form class="form" method="POST"
+            action="https://script.google.com/macros/s/AKfycbxClFY-pL7sIM_a4_YhJgmYb_eUl5nzdWzL2sRaeEFApGjZh-o23_NUSXp4nFzzTEhHqA/exec">
+
         <input class="input" name="firstName" placeholder="Ad" required />
         <input class="input" name="lastName" placeholder="Soyad" required />
-        <textarea class="textarea" name="comment" placeholder="Yorumunuz" required></textarea>
 
-        <div>
-          <div style="font-weight:800;margin-bottom:8px">Profil resmi seçin</div>
-          <div class="avatars" id="avatars">
-            <button type="button" class="avatar-pick active" data-avatar="a1" aria-label="Avatar 1"></button>
-            <button type="button" class="avatar-pick" data-avatar="a2" aria-label="Avatar 2"></button>
-            <button type="button" class="avatar-pick" data-avatar="a3" aria-label="Avatar 3"></button>
-            <button type="button" class="avatar-pick" data-avatar="a4" aria-label="Avatar 4"></button>
-            <button type="button" class="avatar-pick" data-avatar="a5" aria-label="Avatar 5"></button>
-          </div>
-          <div class="small">Not: Bu aşamada avatarlar temsilidir. İsterseniz gerçek ikonlar ekleriz.</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <select class="input" name="gender" required>
+            <option value="" selected disabled>Cinsiyet seçin</option>
+            <option value="Erkek">Erkek</option>
+            <option value="Kadın">Kadın</option>
+          </select>
+
+          <select class="input" name="rating" required>
+            <option value="5" selected>5 / 5</option>
+            <option value="4">4 / 5</option>
+            <option value="3">3 / 5</option>
+            <option value="2">2 / 5</option>
+            <option value="1">1 / 5</option>
+          </select>
         </div>
 
+        <textarea class="textarea" name="comment" placeholder="Yorumunuz" required></textarea>
+
         <button class="btn btn-primary" type="submit">Gönder</button>
-        <div class="small" id="msg"></div>
+
+        <div class="small">
+          Gönderdiğiniz yorum önce kontrol edilir, ardından yayınlanır.
+        </div>
       </form>
     </section>
 
@@ -85,24 +100,6 @@
 
   <script>
     document.getElementById("y").textContent = new Date().getFullYear();
-
-    // Avatar seçimi (statik)
-    const picks = document.querySelectorAll(".avatar-pick");
-    picks.forEach(b=>{
-      b.addEventListener("click", ()=>{
-        picks.forEach(x=>x.classList.remove("active"));
-        b.classList.add("active");
-      });
-    });
-
-    // Demo submit (canlı kayıt sonraki adım)
-    document.getElementById("reviewForm").addEventListener("submit", (e)=>{
-      e.preventDefault();
-      document.getElementById("msg").textContent =
-        "Teşekkürler. Yorumunuz alındı (bir sonraki adımda otomatik yayın kurulacak).";
-      e.target.reset();
-      picks.forEach((x,i)=>x.classList.toggle("active", i===0));
-    });
   </script>
 </body>
 </html>

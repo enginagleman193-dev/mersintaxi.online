@@ -179,43 +179,13 @@
         <a class="btn btn-outline" href="yorum-yaz">Yorum Yaz</a>
       </div>
 
-      <div class="slider" aria-label="Kaydırmalı yorumlar">
-        <article class="slide">
-          <div class="row">
-            <div class="avatar" aria-hidden="true"></div>
-            <div>
-              <div class="name">Ahmet Y****</div>
-              <div class="meta">Havalimanı • 5/5</div>
-            </div>
-          </div>
-          <p class="quote">“Tam zamanında geldi, rahat bir şekilde yetiştik. Teşekkürler.”</p>
-        </article>
-
-        <article class="slide">
-          <div class="row">
-            <div class="avatar" aria-hidden="true"></div>
-            <div>
-              <div class="name">Elif K*</div>
-              <div class="meta">Şehir içi • 5/5</div>
-            </div>
-          </div>
-          <p class="quote">“Gece geç saatte hızlı dönüş yaptılar. Güvenle kullandım.”</p>
-        </article>
-
-        <article class="slide">
-          <div class="row">
-            <div class="avatar" aria-hidden="true"></div>
-            <div>
-              <div class="name">Mehmet A***</div>
-              <div class="meta">Acil çağrı • 5/5</div>
-            </div>
-          </div>
-          <p class="quote">“Kısa sürede kapıdaydı. Araç temiz, sürüş güvenliydi.”</p>
-        </article>
+      <!-- CANLI YORUMLAR (Google Sheet -> Apps Script) -->
+      <div class="slider" id="reviewsSlider" aria-label="Kaydırmalı yorumlar">
+        <div class="small" id="reviewsMsg">Yorumlar yükleniyor…</div>
       </div>
 
       <div class="note">
-        Not: Canlı yorum ekleme (müşteri yazınca otomatik görünme) özelliğini bir sonraki adımda Supabase ile Vercel üzerinde kuracağız.
+        Not: Yorumlar admin onayı ile yayınlanır. Onaylanmayan yorumlar sitede görünmez.
       </div>
     </section>
 
@@ -268,7 +238,7 @@
     // Yıl
     document.getElementById("y").textContent = new Date().getFullYear();
 
-    // Slider
+    // Hero Slider
     (function(){
       const slidesWrap = document.getElementById("heroSlides");
       const dotsWrap = document.getElementById("heroDots");
@@ -332,6 +302,69 @@
         if (y < lastY - 8) bar.classList.remove('is-hidden');
         lastY = y;
       }, {passive:true});
+    })();
+
+    // CANLI YORUMLAR (JSONP ile CORS'suz)
+    (function loadReviewsJSONP(){
+      const REVIEWS_API = "https://script.google.com/macros/s/AKfycbxClFY-pL7sIM_a4_YhJgmYb_eUl5nzdWzL2sRaeEFApGjZh-o23_NUSXp4nFzzTEhHqA/exec";
+
+      function genderClass(g){
+        g = (g || "").toLowerCase();
+        if (g.includes("erk")) return "avatar-male";
+        if (g.includes("kad")) return "avatar-female";
+        return "avatar-neutral";
+      }
+
+      function escapeHtml(str){
+        return String(str || "")
+          .replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;")
+          .replaceAll('"',"&quot;").replaceAll("'","&#039;");
+      }
+
+      function renderReviews(data){
+        const wrap = document.getElementById("reviewsSlider");
+        const msg  = document.getElementById("reviewsMsg");
+        if(!wrap) return;
+
+        if(!data || !data.ok || !Array.isArray(data.items) || data.items.length === 0){
+          if(msg) msg.textContent = "Henüz yayınlanmış yorum yok.";
+          return;
+        }
+        if(msg) msg.remove();
+
+        wrap.innerHTML = data.items.map(item => {
+          const name = `${item.ad || ""} ${item.soyadMasked || ""}`.trim();
+          const puan = Number(item.puan || 0) || 0;
+
+          return `
+            <article class="slide">
+              <div class="row">
+                <div class="avatar ${genderClass(item.cinsiyet)}" aria-hidden="true"></div>
+                <div>
+                  <div class="name">${escapeHtml(name)}</div>
+                  <div class="meta">Mersin • ${escapeHtml(puan)}/5</div>
+                </div>
+              </div>
+              <p class="quote">“${escapeHtml(item.yorum)}”</p>
+            </article>
+          `;
+        }).join("");
+      }
+
+      const cb = "cb_reviews_" + Math.random().toString(36).slice(2);
+      window[cb] = (data) => {
+        renderReviews(data);
+        try { delete window[cb]; } catch(e) { window[cb] = undefined; }
+        script.remove();
+      };
+
+      const script = document.createElement("script");
+      script.src = `${REVIEWS_API}?callback=${cb}&t=${Date.now()}`;
+      script.onerror = () => {
+        const msg = document.getElementById("reviewsMsg");
+        if(msg) msg.textContent = "Yorumlar yüklenemedi.";
+      };
+      document.body.appendChild(script);
     })();
   </script>
 

@@ -454,3 +454,89 @@ body{
     padding-bottom:calc(66px + env(safe-area-inset-bottom));
   }
 }
+
+/* =========================================================
+   (A) SELECT DROPDOWN BEYAZLIK FIX (Koyu tema)
+   ========================================================= */
+
+/* Tarayıcı/OS native form UI’yi koyu moda çekmeyi dener */
+:root{
+  color-scheme: dark;
+}
+
+/* Select görünümü */
+select.input{
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  background-color: rgba(255,255,255,.04);
+  color: var(--txt);
+}
+
+/* Option paneli (Chrome/Edge/Firefox’ta çoğunlukla işe yarar) */
+select.input option{
+  background-color: #0f1012;
+  color: #ffffff;
+}
+
+/* Focus daha temiz */
+.input:focus,
+.textarea:focus,
+select.input:focus{
+  outline: none;
+  border-color: rgba(255,208,0,.55);
+  box-shadow: 0 0 0 3px rgba(255,208,0,.12);
+}
+
+/* =========================================================
+   (B) ERKEK / KADIN SİLUET AVATAR (RESİMSİZ)
+   Kullanım:
+   <div class="avatar avatar-male"></div>
+   <div class="avatar avatar-female"></div>
+   ========================================================= */
+
+.avatar{
+  position:relative;
+  overflow:hidden;
+}
+
+.avatar-male{
+  background:#1e4fbf !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+
+.avatar-female{
+  background:#d94b8a !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+
+.avatar-neutral{
+  background:#58606b !important;
+  border-color: rgba(255,255,255,.12) !important;
+}
+
+/* kafa */
+.avatar::before{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:44%;
+  width:18px;
+  height:18px;
+  transform:translate(-50%,-50%);
+  background: rgba(220,220,220,.92);
+  border-radius:999px;
+}
+
+/* omuz */
+.avatar::after{
+  content:"";
+  position:absolute;
+  left:50%;
+  top:78%;
+  width:30px;
+  height:18px;
+  transform:translate(-50%,-50%);
+  background: rgba(200,200,200,.90);
+  border-radius:16px 16px 10px 10px;
+}
